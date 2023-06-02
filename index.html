@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Search</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Movie Search</h1>
+
+      <form class="search-form" id="search-form">
+        <input
+          type="text"
+          class="search-input"
+          id="search-input"
+          placeholder="Search Movies..."
+        />
+        <button type="submit" class="search-button" id="search-button">
+          Search
+        </button>
+      </form>
+
+      <div id="movie-container"></div>
+
+      <script>
+        const API_KEY =
+          "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZGNlZmRkNDlkNzIxOGQzYzU4YzZmN2Q5NDlhODc5ZCIsInN1YiI6IjY0NzU4YzFmYmJjYWUwMDBjMTQ0YjVmMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.PagxBbcXnNmEDzilvApSCe42Hjoa5Eov_b2NpQuD7X0";
+
+        const popularMoviesUrl =
+          "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1";
+        const searchMoviesUrl = (query) =>
+          `https://api.themoviedb.org/3/search/movie?language=en-US&page=1&query=${query}`;
+
+        function showMovies(movies) {
+          const movieContainer = document.getElementById("movie-container");
+          movieContainer.innerHTML = "";
+
+          movies.forEach((movie) => {
+            const movieCard = document.createElement("div");
+            movieCard.className = "movie-card";
+
+            const movieImage = document.createElement("img");
+            movieImage.src = `https://image.tmdb.org/t/p/w300/${movie.poster_path}`;
+            movieImage.alt = movie.title;
+            movieCard.appendChild(movieImage);
+
+            const movieInfo = document.createElement("div");
+            movieInfo.className = "movie-info";
+
+            const movieTitle = document.createElement("h2");
+            movieTitle.textContent = movie.title;
+            movieInfo.appendChild(movieTitle);
+
+            const movieOverview = document.createElement("p");
+            movieOverview.textContent = movie.overview;
+            movieInfo.appendChild(movieOverview);
+
+            movieCard.appendChild(movieInfo);
+            movieContainer.appendChild(movieCard);
+
+            movieCard.addEventListener("click", () => {
+              alert(`Clicked on movie: ${movie.title} (ID: ${movie.id})`);
+            });
+          });
+        }
+
+        function getPopularMovies() {
+          const options = {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${API_KEY}`,
+            },
+          };
+
+          fetch(popularMoviesUrl, options)
+            .then((response) => response.json())
+            .then((data) => {
+              const movies = data.results;
+              showMovies(movies);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        }
+
+        function searchMovies(query) {
+          const searchUrl = searchMoviesUrl(query);
+
+          const options = {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${API_KEY}`,
+            },
+          };
+
+          fetch(searchUrl, options)
+            .then((response) => response.json())
+            .then((data) => {
+              const movies = data.results;
+              showMovies(movies);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        }
+
+        function init() {
+          const searchForm = document.getElementById("search-form");
+          const searchInput = document.getElementById("search-input");
+
+          searchForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const query = searchInput.value;
+            searchMovies(query);
+          });
+
+          getPopularMovies();
+        }
+        function getPopularMovies() {
+          const options = {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${API_KEY}`,
+            },
+          };
+
+          fetch(popularMoviesUrl, options)
+            .then((response) => response.json())
+            .then((data) => {
+              const movies = data.results.slice(0, 20); // 상위 20개의 영화만 가져오기
+              showMovies(movies);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        }
+
+        init();
+      </script>
+    </div>
+  </body>
+</html>

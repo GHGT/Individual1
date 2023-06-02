@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Search</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+  <div class="container">
+      <h1>Movie Search</h1>
+
+      <form class="search-form" id="search-form">
+        <input
+          type="text"
+          class="search-input"
+          id="search-input"
+          placeholder="Search Movies..."
+        />
+        <button type="submit" class="search-button" id="search-button">
+          Search
+        </button>
+      </form>
+
+    <script> //js
+const options = {
+  method: 'GET',
+  headers: {
+    accept: 'application/json',
+    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZGNlZmRkNDlkNzIxOGQzYzU4YzZmN2Q5NDlhODc5ZCIsInN1YiI6IjY0NzU4YzFmYmJjYWUwMDBjMTQ0YjVmMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.PagxBbcXnNmEDzilvApSCe42Hjoa5Eov_b2NpQuD7X0'
+  }
+};
+
+fetch('https://api.themoviedb.org/3/genre/movie/list?language=en', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+
+  
+
+    </script>
+  </body>
+</html>
